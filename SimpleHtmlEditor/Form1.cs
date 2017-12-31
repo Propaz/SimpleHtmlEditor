@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 
@@ -177,6 +178,35 @@ namespace SimpleHtmlEditor
                saveFile1.FileName.Length > 0)
             {
                 richTextBox1.SaveFile(saveFile1.FileName, RichTextBoxStreamType.PlainText);
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)//ask before close form
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                if (MessageBox.Show("Do you want to close?",
+                                    "Confirm",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+            base.OnFormClosing(e);
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            if (richTextBox1.SelectionLength > 0)
+            {
+                string SelectedText = Regex.Replace(richTextBox1.SelectedText, "<.*?>", String.Empty);
+                string SelectedText_Clear = Regex.Replace(SelectedText, "&nbsp;", String.Empty);
+                richTextBox1.SelectedText = richTextBox1.SelectedText.Replace(richTextBox1.SelectedText.ToString(), SelectedText_Clear);
+            }
+            else
+            {
+                MessageBox.Show("Select text first!");
             }
         }
     }
